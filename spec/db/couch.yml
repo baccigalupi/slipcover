@@ -8,9 +8,9 @@ test:
   port: 5984
   database: slipcover_test
 
-cloudant:
+production:
   protocol: https
-  username: kane
-  password: password
+  user: kane
+  password: secret
   domain: kane.cloudant.com
   database: slipcover

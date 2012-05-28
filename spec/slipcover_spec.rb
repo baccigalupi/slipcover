@@ -1,12 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Slipcover do
-  describe '#host' do
-    it "is base on the yml file" do
-      Slipcover.host.should == "http://localhost:5984"
-    end
-  end
-
   describe 'CRUD' do
     it "gets" do
       RestClient.should_receive(:get).with("#{Slipcover.host}/foo")

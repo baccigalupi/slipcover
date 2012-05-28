@@ -1,13 +1,24 @@
 require 'rest_client'
+require 'hashie/mash'
+
 require 'rest'
+require 'server'
 require 'database'
 require 'document'
 
 module Slipcover
   extend Slipcover::Rest
 
+  def self.env= e
+    @env ||= e.to_sym
+  end
+
+  def self.env
+    @env ||= Rails.env.to_sym
+  end
+
   def self.host
-    @host ||= "http://#{env['domain']}:#{env['port']}"
+    @host ||= "http://#{config_env['domain']}:#{config_env['port']}"
   end
 
   def self.url
@@ -15,7 +26,7 @@ module Slipcover
   end
 
   def self.database
-    env['database']
+    config_env[:database]
   end
 
   def self.config_path= path
@@ -27,12 +38,12 @@ module Slipcover
   end
 
   private
-  def self.load
-    @load ||= YAML::load(File.read(config_path))
-  end
+    def self.load
+      @load ||= Hashie::Mash.new(YAML::load(File.read(config_path)))
+    end
 
-  def self.env
-    load[Rails.env]
-  end
+    def self.config_env
+      load[env]
+    end
 end
 

@@ -8,5 +8,7 @@ require 'slipcover'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
-  
+  #config.before do
+    #Slipcover.config_path = File.dirname(__FILE__) + "/config/couch.yml"
+  #end
 end

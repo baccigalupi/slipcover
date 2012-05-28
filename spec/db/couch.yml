@@ -1,0 +1,16 @@
+development:
+  domain: localhost
+  port: 5984
+  database: slipcover
+
+test:
+  domain: localhost
+  port: 5984
+  database: slipcover_test
+
+cloudant:
+  protocol: https
+  username: kane
+  password: password
+  domain: kane.cloudant.com
+  database: slipcover

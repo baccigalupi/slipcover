@@ -7,22 +7,12 @@ require 'database'
 require 'document'
 
 module Slipcover
-  extend Slipcover::Rest
-
   def self.env= e
     @env ||= e.to_sym
   end
 
   def self.env
     @env ||= Rails.env.to_sym
-  end
-
-  def self.host
-    @host ||= "http://#{config_env['domain']}:#{config_env['port']}"
-  end
-
-  def self.url
-    host
   end
 
   def self.database

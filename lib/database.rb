@@ -1,27 +1,29 @@
 module Slipcover
   class Database
     include Slipcover::Rest
-    attr_accessor :name
+    attr_accessor :name, :server
 
-    def initialize name
+    def initialize name, opts={}
       self.name = name
+      self.server = opts[:server] || Slipcover::Server.default
     end
 
     def url
-      "#{Slipcover.url}/#{name}"
+      "#{server.url}/#{name}"
     end
 
     def destroy
-      Slipcover.delete name
+      server.delete name
     end
 
-    def self.create name
+    def self.create name, opts={}
+      server = opts[:server] || Slipcover::Server.default
       begin
-        Slipcover.put(name)
+        server.put(name)
       rescue Exception => e
         raise(e) unless e.message.match /412/i
       end
-      new name
+      new name, opts
     end
 
     def self.default

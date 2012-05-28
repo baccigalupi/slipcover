@@ -1,6 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Slipcover::Server do
+  it "include the Rest module" do
+    Slipcover::Database.ancestors.should include(Slipcover::Rest)
+  end
+
   describe '#url' do
     describe 'port' do
       it "does not include the leading colon if a port is not defined" do

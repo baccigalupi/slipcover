@@ -2,23 +2,36 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Slipcover::Database do
   before do
-    Slipcover.delete('name') rescue nil
+    @server = Slipcover::Server.default
+    @server.delete('name') rescue nil
+  end
+
+  describe '#server' do
+    it "is the default unless otherwise specified" do
+      Slipcover::Database.default.server.should == @server
+    end
+
+    it "can be something else" do
+      server = Slipcover::Server.new(:domain => 'foo.com')
+      db = Slipcover::Database.new('foo', :server => server)
+      db.server.should == server
+    end
   end
 
   describe '#default' do
     after do
-      Slipcover.delete(Slipcover.database)
+      @server.delete('slipcover_test')
     end
 
     it "is what is specified in the config" do
-      Slipcover::Database.default.url.should == "#{Slipcover.url}/slipcover_test"
+      Slipcover::Database.default.url.should == "#{Slipcover::Server.default.url}/slipcover_test"
     end
   end
 
   describe '#create' do
     it "makes a new database on the server" do
       Slipcover::Database.create('name')
-      Slipcover.get('_all_dbs').should include('name')
+      @server.get('_all_dbs').should include('name')
     end
 
     it "returns a database object" do
@@ -43,7 +56,7 @@ describe Slipcover::Database do
   end
 
   it '#url includes the host and name' do
-    Slipcover::Database.create('name').url.should == "#{Slipcover.url}/name"
+    Slipcover::Database.create('name').url.should == "#{Slipcover::Server.default.url}/name"
   end
 
   it "#destroy will send a delete with the database url" do
@@ -52,12 +65,8 @@ describe Slipcover::Database do
     db.destroy
   end
 
-  describe 'REST' do
-    it 'uses the url' do
-      db = Slipcover::Database.create('name')
-      RestClient.should_receive(:get).with("#{db.url}/something")
-      db.get "something"
-    end
+  it "include the Rest module" do
+    Slipcover::Database.ancestors.should include(Slipcover::Rest)
   end
 end
 

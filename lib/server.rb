@@ -1,5 +1,7 @@
 module Slipcover
   class Server
+    include Slipcover::Rest
+
     attr_accessor :protocol, :domain, :port, :user, :password
 
     def initialize opts={}

@@ -1,5 +1,6 @@
 require 'rest_client'
 require 'hashie/mash'
+require 'json'
 
 require 'rest'
 require 'server'
@@ -25,6 +26,10 @@ module Slipcover
 
   def self.config_path
     @config_path ||= "#{Rails.root}/db/couch.yml"
+  end
+
+  def self.parse string
+    JSON.parse(string)
   end
 
   private

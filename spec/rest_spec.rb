@@ -21,7 +21,7 @@ describe Slipcover::Rest do
   end
 
   it "posts with data" do
-    RestClient.should_receive(:post).with(anything, {:data => 'you know it!'})
+    RestClient.should_receive(:post).with(anything, {:data => 'you know it!'}.to_json)
     MyClass.post('foo', {:data => 'you know it!'})
   end
 
@@ -31,13 +31,26 @@ describe Slipcover::Rest do
   end
 
   it "puts with data" do
-    RestClient.should_receive(:put).with(anything, {:data => 'yeah!'})
+    RestClient.should_receive(:put).with(anything, {:data => 'yeah!'}.to_json)
     MyClass.put('foo', {:data => 'yeah!'})
   end
 
   it "deletes" do
     RestClient.should_receive(:delete).with("#{MyClass.url}/foo")
     MyClass.delete('foo')
+  end
+
+  describe 'response' do
+    it "parses the json" do
+      RestClient.should_receive(:put).and_return({one: 'way'}.to_json)
+      MyClass.put.should == {'one' =>'way'}
+    end
+
+    it "returns the direct response if that raises an error" do
+      RestClient.should_receive(:get).and_return('0 this')
+      JSON.should_receive(:parse).and_raise(NoMethodError)
+      MyClass.get.should == '0 this'
+    end
   end
 end
 

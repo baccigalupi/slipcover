@@ -33,6 +33,7 @@ DEPENDENCIES
   bundler (~> 1.1.3)
   hashie
   jeweler (~> 1.8.3)
+  json
   rdoc (~> 3.12)
   rest-client
   rspec (~> 2.8.0)

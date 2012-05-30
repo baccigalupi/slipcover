@@ -23,6 +23,18 @@ module Slipcover
       self
     end
 
+    def reload
+      return self unless rev
+      response = get
+      self.data = response
+      self.rev = response.rev
+    end
+
+    def destroy
+      return nil unless rev
+      response = delete(nil, {:_id => id, :_rev => rev})
+    end
+
     def self.database
       @database ||= Slipcover::Database.default
     end

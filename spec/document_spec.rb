@@ -98,6 +98,53 @@ describe Slipcover::Document do
     end
   end
 
+  describe '#reload' do
+    before do
+      @doc = Slipcover::Document.new(:foo => 'bar').save
+      @doc.data['this'] = 'that'
+      @response = Hashie::Mash.new({
+        :rev => '456',
+        :baz => 'zardoz'
+      })
+    end
+
+    it "sends a get request to the url" do
+      @doc.should_receive(:get).and_return(@response)
+      @doc.reload
+    end
+
+    it "resets the data based on the response" do
+      @doc.reload
+      @doc.data.keys.should_not include 'this'
+    end
+
+    it "updates the rev" do
+      @doc.stub(:get).and_return(@response)
+      @doc.reload
+      @doc.rev.should == '456'
+    end
+
+    it "does nothing if the document is new" do
+      doc = Slipcover::Document.new(:foo => 'bar')
+      doc.reload.should == doc
+    end
+  end
+
+  describe '#destroy' do
+    before do
+      @doc = Slipcover::Document.new.save
+    end
+
+    it "sends a delete request with the id and revision data" do
+      @doc.should_receive(:delete) do |path, data|
+        path.should == nil
+        data[:_id].should == @doc.id
+        data[:_rev].should == @doc.rev
+      end
+      @doc.destroy
+    end
+  end
+
   describe '.uuid' do
     before do
       Slipcover::Document.class_eval "@uuids = []"

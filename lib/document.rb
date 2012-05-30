@@ -1,57 +1,23 @@
 module Slipcover
-  class Document
-    include Slipcover::Rest
-
-    attr_accessor :database, :server, :id, :rev, :data
+  class Document < DocumentBase
+    attr_accessor :id
 
     def initialize data={}, opts={}
       self.id = self.class.uuid
-      self.database = opts[:database] || self.class.database
-      self.server = database.server
+      super(opts)
       self.data = Hashie::Mash.new(data)
     end
 
-    def url
-      @url ||= "#{database.url}/#{id}"
+    def [](key)
+      data[key]
     end
 
-    def save
-      identifiers = {:_id => id}
-      identifiers[:_rev] = rev if rev
-      response = put(nil, data.merge(identifiers))
-      self.rev = response.rev
-      self
+    def []=(key, value)
+      data[key] = value
     end
 
-    def reload
-      return self unless rev
-      response = get
-      self.data = response
-      self.rev = response.rev
-    end
-
-    def destroy
-      return nil unless rev
-      response = delete(nil, {:_id => id, :_rev => rev})
-    end
-
-    def self.database
-      @database ||= Slipcover::Database.default
-    end
-
-    def self.database= d
-      @database = d
-    end
-
-    def self.uuids
-      @uuids ||= []
-    end
-
-    def self.uuid
-      if self.uuids.empty?
-        @uuids += Slipcover::Server.default.get('_uuids?count=100')['uuids']
-      end
-      uuids.pop
+    def self.queries views={}
+      @queries ||= Slipcover::DesignDocument.create(self.to_s, database, views)
     end
   end
 end

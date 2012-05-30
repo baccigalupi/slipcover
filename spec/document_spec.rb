@@ -145,6 +145,64 @@ describe Slipcover::Document do
     end
   end
 
+  describe 'data accessors' do
+    before do
+      @doc = Slipcover::Document.new(:foo => 'bar')
+    end
+
+    it "gets with []" do
+      @doc[:foo].should == 'bar'
+    end
+
+    it "sets with []=" do
+      @doc[:baz] = 'zardoz'
+      @doc.data[:baz].should == 'zardoz'
+    end
+  end
+
+  describe 'class level convenience methods' do
+    it ".get with an id will find the new record from the database" do
+      @doc = Slipcover::Document.new(:foo => 'bar').save
+      doc = Slipcover::Document.get(@doc.id)
+      doc.rev.should == @doc.rev
+      doc.id.should == @doc.id
+      doc[:foo].should == 'bar'
+    end
+
+    it ".create will make a new one and save it directly" do
+      doc = Slipcover::Document.create(:foo => 'bar')
+      doc.rev.should_not be_nil
+      doc[:foo].should == 'bar'
+    end
+  end
+
+  describe '.queries' do
+    before :all do
+      class MyDoc < Slipcover::Document
+        queries({
+          :all => {
+            :map => "function(doc) { if (doc.type == 'MyDoc')  emit(null, doc) }"
+          }
+        })
+
+        def data_identifiers
+          identifiers = super
+          identifiers[:type] = 'MyDoc'
+          identifiers
+        end
+      end
+    end
+
+    it "creates a design document for the class if there is not one" do
+      MyDoc.queries.should be_a Slipcover::DesignDocument
+      MyDoc.queries.name.should == 'MyDoc'
+    end
+
+    it "adds entries to the design views collection" do
+      MyDoc.queries.views[:all][:map].should == "function(doc) { if (doc.type == 'MyDoc')  emit(null, doc) }"
+    end
+  end
+
   describe '.uuid' do
     before do
       Slipcover::Document.class_eval "@uuids = []"

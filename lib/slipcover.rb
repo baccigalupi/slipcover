@@ -5,6 +5,8 @@ require 'json'
 require 'rest'
 require 'server'
 require 'database'
+require 'document_base'
+require 'design_document'
 require 'document'
 
 module Slipcover

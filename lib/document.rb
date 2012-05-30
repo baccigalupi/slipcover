@@ -19,5 +19,9 @@ module Slipcover
     def self.queries views={}
       @queries ||= Slipcover::DesignDocument.create(self.to_s, database, views)
     end
+
+    def self.view name
+      queries.get("_view/#{name}")
+    end
   end
 end

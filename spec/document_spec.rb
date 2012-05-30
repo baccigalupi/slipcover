@@ -176,7 +176,7 @@ describe Slipcover::Document do
     end
   end
 
-  describe '.queries' do
+  describe 'finding docs' do
     before :all do
       class MyDoc < Slipcover::Document
         queries({
@@ -193,13 +193,20 @@ describe Slipcover::Document do
       end
     end
 
-    it "creates a design document for the class if there is not one" do
-      MyDoc.queries.should be_a Slipcover::DesignDocument
-      MyDoc.queries.name.should == 'MyDoc'
+    describe '.queries' do
+      it "creates a design document for the class if there is not one" do
+        MyDoc.queries.should be_a Slipcover::DesignDocument
+        MyDoc.queries.name.should == 'MyDoc'
+      end
+
+      it "adds entries to the design views collection" do
+        MyDoc.queries.views[:all][:map].should == "function(doc) { if (doc.type == 'MyDoc')  emit(null, doc) }"
+      end
     end
 
-    it "adds entries to the design views collection" do
-      MyDoc.queries.views[:all][:map].should == "function(doc) { if (doc.type == 'MyDoc')  emit(null, doc) }"
+    it ".all sends a get request to the right url" do
+      RestClient.should_receive(:get).with("#{MyDoc.queries.url}/_view/all")
+      MyDoc.view(:all)
     end
   end
 

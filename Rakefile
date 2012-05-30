@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "slipcover"
   gem.homepage = "http://github.com/baccigalupi/slipcover"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Super lightweight CouchDB library}
+  gem.description = %Q{Slipcover is a ultra-lite Ruby wrapper for accessing CouchDB}
   gem.email = "baccigalupi@gmail.com"
   gem.authors = ["Kane Baccigalupi"]
   # dependencies defined in Gemfile

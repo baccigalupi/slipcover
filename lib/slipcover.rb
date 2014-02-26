@@ -2,6 +2,7 @@ require 'rest_client'
 require 'hashie/mash'
 require 'json'
 
+require 'rest_adapter'
 require 'rest'
 require 'server'
 require 'database'

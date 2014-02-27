@@ -17,14 +17,23 @@ module Slipcover
     end
 
     def url
-      return @url if @url
-      user_string = user ? "#{user}:#{password}@" : ''
-      port_string = port ? ":#{port}" : ''
-      @url = "#{protocol}://#{user_string}#{domain}#{port_string}"
+      @url ||= "#{protocol}://#{user_string}#{domain}#{port_string}"
+    end
+
+    def user_string
+      user ? "#{user}:#{password}@" : ''
+    end
+
+    def port_string
+      port ? ":#{port}" : ''
+    end
+
+    def ==(other)
+      url == other.url
     end
 
     def self.default
-      @default ||= new(Slipcover.config_env)
+      @default ||= new(Slipcover.config)
     end
 
     def self.default= d

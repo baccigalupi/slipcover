@@ -27,7 +27,7 @@ module Slipcover
     end
 
     def self.default
-      @default ||= create(Slipcover.database)
+      @default ||= create(Slipcover.config[:database])
     end
   end
 end

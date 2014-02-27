@@ -45,7 +45,7 @@ describe Slipcover::Server do
     end
 
     it "is determined by the Slipcover environment" do
-      Slipcover.env = 'production'
+      Slipcover.default_config.env = 'production'
       Slipcover::Server.default.url.should == "https://kane:secret@kane.cloudant.com"
     end
 

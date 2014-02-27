@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Slipcover::Document do
   before :all do
-    Slipcover::Database.create(Slipcover.database)
+    Slipcover::Database.create(Slipcover.config[:database])
   end
 
   it "include the Rest module" do

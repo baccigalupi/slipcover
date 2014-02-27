@@ -1,6 +1,6 @@
 = slipcover
 
-Description goes here.
+Slipcover is a lightweight CouchDB wrapper for Ruby
 
 == Contributing to slipcover
  
